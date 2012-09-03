@@ -1,0 +1,16 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    highline (1.6.14)
+    mechanize (1.0.1.beta.20110107104205)
+      net-http-persistent (~> 1.1)
+      nokogiri (>= 1.2.1)
+    net-http-persistent (1.9)
+    nokogiri (1.5.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  highline
+  mechanize (~> 1.0.1.beta.20110107104205)
