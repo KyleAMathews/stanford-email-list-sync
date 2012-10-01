@@ -92,11 +92,11 @@ end
 
 def get_lds_members()
   login_page = @agent.get(LDS_LOGIN_URL)
-  login_form = login_page.forms[0]
+  login_form = login_page.form_with(:id => 'loginForm')
   login_form.username = @lds_username
   login_form.password = @lds_password
 
-  test = @agent.submit(login_form,login_form.buttons.first)
+  @agent.submit(login_form,login_form.buttons.first)
 
   csv = @agent.get(LDS_CSV_URL).body
 
@@ -127,10 +127,11 @@ end
 def login_to_google(username,password)
   unless @google_logged_in
     google_page = @agent.get(GOOGLE_LOGIN_URL)
-    login_form = google_page.forms[0]
+    login_form = google_page.form_with(:id => 'gaia_loginform')
     login_form.Email = username
     login_form.Passwd = password
-    page = @agent.submit(login_form,login_form.buttons.first)
+    login_result = @agent.submit(login_form,login_form.buttons.first)
+    puts login_result.body
     # should check if we are logged in somehow
     @google_logged_in = true
   end
@@ -196,8 +197,6 @@ end
 @to_be_invited_to_eq = Array.new
 @to_be_invited_to_rs = Array.new
 
-@logger = Logger.new(STDOUT)
-
 @options = parse_options()
 
 @invite = @options[:invite]
@@ -207,7 +206,11 @@ end
 @google_username = ask("Enter your google username:  ") { |q| q.echo = true }#@options[:google_username] || ask("Enter your google username:  ") { |q| q.echo = true }
 @google_password = ask("Enter your google password:  ") { |q| q.echo = "*" }#@options[:google_password] || ask("Enter your google password:  ") { |q| q.echo = "*" }
 
-@agent = Mechanize.new
+@agent = Mechanize.new do |agent|
+  #agent.log = Logger.new(STDOUT)
+  #agent.follow_meta_refresh = true
+  agent.user_agent_alias = 'Mac Safari'
+end
 
 puts "Getting blacklist"
 get_black_list()
